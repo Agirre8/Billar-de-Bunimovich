@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[top=35mm, bottom=15mm]{geometry}
+\usepackage{blindtext}
+\title{Billar de Bunimovich}
+\author{Iñigo Agirre Garrido}
+\date{December 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Leonid Abramowitsch Bunimovich (nacido el 1 de agosto de 1947) es un matemático soviético y estadounidense , que realizó aportes fundamentales a la teoría de los Sistemas Dinámicos, la Física Estadística y diversas aplicaciones. Bunimovich recibió su licenciatura en 1967, maestría en 1969 y doctorado en 1973 de la Universidad de Moscú.
+
+Bunimovich es conocido principalmente por el descubrimiento de un mecanismo fundamental del caos en los sistemas dinámicos llamado mecanismo de desenfoque. Este descubrimiento fue una gran sorpresa no solo para la comunidad matemática sino también para la física. Los físicos no podían creer que tal fenómeno (¡físico!) fuera posible (a pesar de que se proporcionó una prueba matemática rigurosa) hasta que realizaron experimentos numéricos masivos. La clase más famosa de sistemas dinámicos caóticos de este tipo, los billares dinámicos, son billares caóticos enfocados como el estadio Bunimovich.
+
+Se va ha estudiar el caso aprticular de el estadio o billar de Bunimovich.
+
+\section{Código de el Billar de Bunimovich}
+
+El codigo realizado para modelizar el caos de un billar de Bunimovich se encuentra en mi página de github, en el siguiente repositorio:\\
+\\
+Link al repositorio: \url{https://github.com/Agirre8/Billar-de-Bunimovich}
+
+\subsection{Diagrama de flujo del programa}
+\begin{center}
+        \includegraphics[width=.2\textwidth]{UML1.png}
+\end{center}
+\newpage
+
+\section{Ejecución del programa}
+Dadas tres condiciones iniciales, comprobar el funcionamiento del programa para cada una de estas:
+\\
+\subsection{Primera condición inicial}
+$S_1$ = (2, r, 3.4) siendo $S$ = (x, y, r) calcula y representa las trayectorias para 20 rebotes siendo a=6 y r=1.
+\begin{center}
+        \includegraphics[width=0.7\textwidth]{Billar1.png}
+\end{center}
+
+\subsection{Segunda condición inicial}
+$S_2$ = (3.7, r, 3.4) siendo $S$ = (x, y, r) calcula y representa las trayectorias para 20 rebotes siendo a=6 y r=1.
+\begin{center}
+        \includegraphics[width=0.7\textwidth]{Billar2.png}
+\end{center}
+
+\subsection{Tercera condición inicial}
+$S_3$ = (1, r, 4.8) siendo $S$ = (x, y, r) calcula y representa las trayectorias para 20 rebotes siendo a=6 y r=1.
+\begin{center}
+        \includegraphics[width=0.7\textwidth]{Billar3.png}
+\end{center}
+
+
+\section{Cuestiones}
+\subsection{Como se calcula la intersección en la curva}
+El programa busca posibles puntos de intersección con la curva y después calcula la tangente a ese punto para buscarl el rebote, como el valor normal a la tangente del punto de intersección.
+\begin{center}
+        \includegraphics[width=1.1\textwidth]{4.png}
+\end{center}
+
+\newpage
+
+\subsection{Distinción de donde va ha chocar la pelota}
+El programa, por cada rebote evalúa hacia donde se dirige la esfera e identifica entre dos opciones, que este sobre la línea recta o sobre el semicírculo. En funcíon de eso decide que cálculos hace. "table(j,5)" almacena dos valores, 1 si está en la parte linealy 2 si está sobre la parte curva.
+
+Para saber que valores almacenar, si 1 o 2, se realizará la comparación entre dos puntos cercanos a X e Y para saber si hay puntos iguales. Si hay puntos iguales en Y indicaría que estamos en la recta mientras que si en ambos casos hay puntos distintos indicará que estamos en la curva. 
+
+\subsection{Cálculo de los puntos de intersección}
+\begin{center}
+        \includegraphics[width=1.1\textwidth]{5.png}
+\end{center}
+
+\end{document}
