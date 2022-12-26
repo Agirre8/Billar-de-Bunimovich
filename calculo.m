@@ -198,3 +198,87 @@ else
 end
 
 z(remove)=[];
+
+zz=z; 
+    
+if n~=1
+    z=z(find(abs(z-data(n-1,1))>2*10^-4));  %remueve la raíz
+end
+
+% Si no encuentra una solución, aumenta la tolerancia  a la raíz
+if size(z,2)==0    
+    z=zz;
+    z=z(find(abs(z-data(n-1,1))>10^-8)); 
+end
+    
+% Encuentra el valor de t que tiene la minima distancia desde punto anterior
+
+
+if size(z,2)~=1
+    distance=zeros(1,size(z,2));
+    for k=1:size(z,2)
+        i=piece(z(k));
+        distance(1,k)=(xo-table{i,1}(z(k))).^2+(yo-table{i,2}(z(k))).^2;
+    end
+    distance(find(distance<10^-6))=inf;   %elimina alguna valor que no da movimiento 
+    if length(find(distance==min(distance)))~=1
+        k=find(distance==min(distance));
+        data(n,1)=z(k(1));
+    else
+       try
+           data(n,1)=z(find(distance==min(distance)));  %Almacena el vaor correcto para este iteración
+       catch
+       end
+   end
+else
+    data(n,1)=z;  %Almacena el vaor correcto para este iteración
+end
+told=data(n,1);  
+data(n,4)=piece(told);
+newpiece=data(n,4);  
+
+
+if (told-table{newpiece,3}<2*10^-4 | table{newpiece,4}-told<2*10^-4) & (abs(table{newpiece,1}(table{newpiece,3})-table{newpiece,1}(table{newpiece,4}))>10^-8 | abs(table{newpiece,2}(table{newpiece,3})-table{newpiece,2}(table{newpiece,4}))>10^-8)
+    % colisiona con la esquina detectada
+    j=1;    
+    x=inline(char(diff(eval(char(table{newpiece,1})),t)));   %x'(t)
+    y=inline(char(diff(eval(char(table{newpiece,2})),t)));   %y'(t)
+        
+    if told-table{newpiece,3}<2*10^-4  
+        while abs(table{j,1}(table{j,4})-table{newpiece,1}(told))>5*10^-4  | abs(table{j,2}(table{j,4})-table{newpiece,2}(told))>5*10^-4  
+            j=j+1;   %Trata de buscar un par en la otra esquina 
+        end
+
+        xj=inline(char(diff(eval(char(table{j,1})),t)));        %x'(t)
+        yj=inline(char(diff(eval(char(table{j,2})),t)));        %y'(t) 
+            
+        % Calcula el ángulo de reflexión para las fronteras fuera de la esquinas            
+        data(n,2)=atan2(y(table{newpiece,3}),x(table{newpiece,3}))+atan2(yj(table{j,4}),xj(table{j,4}))-ao;
+
+    else
+        while abs(table{j,1}(table{j,3})-table{newpiece,1}(told))>5*10^-4 | abs(table{j,2}(table{j,3})-table{newpiece,2}(told))>5*10^-4
+            j=j+1;  %Trata de buscar un par en la otra esquina 
+        end
+            
+        xj=inline(char(diff(eval(char(table{j,1})),t)));        %x'(t) 
+        yj=inline(char(diff(eval(char(table{j,2})),t)));        %y'(t) 
+ 
+        % Calcula el ángulo de reflexión para las fronteras fuera de la esquinas
+        data(n,2)=atan2(y(table{newpiece,4}),x(table{newpiece,4}))+atan2(yj(table{j,3}),xj(table{j,3}))-ao;
+
+            
+    end
+    data(n,2)=mod(data(n,2),2*pi); % cambia el angulo de reflexión al inicio
+    data(n,3)=NaN;                  % Coloca nan cuando no encuentra una intersección
+else
+    % No encuentra punto de colisión
+    at=subs(deriv(newpiece),told);  % angulo de la línea tangente en el punto de colisión
+    data(n,2)=mod(-ao+2*at,2*pi);   % ángulo horizontal
+    data(n,3)=mod(-ao+pi/2+at,pi);  % angulo incidente
+    if data(n,3)>pi/2
+        data(n,3)=data(n,3)-pi;  %angulo incendente sobre intervalo correcto
+    end
+end
+if data(n,2)>pi
+    data(n,2)=data(n,2)-2*pi;  % Corrige el angulo horizontal
+end
